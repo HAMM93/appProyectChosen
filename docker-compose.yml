@@ -1,0 +1,36 @@
+version: "3"
+services:
+  mysqlsrv:
+    # platform: linux/x86_64
+    image: mysql:5.7.32
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "vm_chosen_dev"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql
+    networks:
+      - mysql-compose-network
+    #  networks:
+    #    - tbr
+  app:
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+    user: 1000:1000
+    volumes:
+      - ./src:/var/www/html
+      - ./.ci/local/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./.ci/local/ports.conf:/etc/apache2/ports.conf
+      - ./.ci/local/interface.conf:/etc/apache2/sites-enabled/interface.conf
+    #  environment:
+    #    XDEBUG_CONFIG: client_host=${MYIP}
+    #    DEBUG: 1
+    depends_on:
+      - mysqlsrv
+    ports:
+      - 9050:9050
+networks:
+  mysql-compose-network:
+    driver: bridge

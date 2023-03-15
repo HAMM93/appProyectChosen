@@ -1,0 +1,14 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+    user: 1000:1000
+    volumes:
+      - ./src:/var/www/html
+      - ./.ci/local/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./.ci/local/ports.conf:/etc/apache2/ports.conf
+      - ./.ci/local/interface.conf:/etc/apache2/sites-enabled/interface.conf
+    ports:
+      - 9050:9050

@@ -1,0 +1,119 @@
+image: docker/compose:1.25.4
+pipelines:
+  custom:
+    Deploy Production Mexico:
+      - step:
+          name: Composer install
+          size: 2x
+          services:
+            - docker
+          caches:
+            - docker
+            - composer
+          script:
+            - docker-compose -f docker-compose-production.yml up -d
+            - docker-compose -f docker-compose-production.yml exec -T app composer install --prefer-dist --optimize-autoloader --no-dev || true
+            - docker-compose -f docker-compose-production.yml exec -T app php artisan config:clear || true
+            - docker-compose -f docker-compose-production.yml exec -T app -uroot chmod -R 777 storage || true
+          artifacts:
+            - src/vendor/**
+            - src/bootstrap/cache/*.php
+      - step:
+          name: Deploy
+          deployment: production-mx
+          image: node:14.5.0-alpine
+          caches:
+            - node
+          script:
+            - cd src/
+            - mv serverless-deploy/serverless-prod-mx.yml serverless.yml
+            - npm install -g serverless@2.35.0
+            - serverless config credentials --provider aws --key ${MY_AWS_ACCESS_KEY_ID} --secret ${MY_AWS_SECRET_ACCESS_KEY} -o
+            - serverless deploy
+    Deploy Homologation Mexico:
+      - step:
+          name: Composer install
+          size: 2x
+          services:
+            - docker
+          caches:
+            - docker
+            - composer
+          script:
+            - docker-compose -f docker-compose-production.yml up -d
+            - docker-compose -f docker-compose-production.yml exec -T app composer install --prefer-dist --optimize-autoloader --no-dev || true
+            - docker-compose -f docker-compose-production.yml exec -T app php artisan config:clear || true
+            - docker-compose -f docker-compose-production.yml exec -T app -uroot chmod -R 777 storage || true
+          artifacts:
+            - src/vendor/**
+            - src/bootstrap/cache/*.php
+      - step:
+          name: Deploy
+          deployment: staging-mx
+          image: node:14.5.0-alpine
+          caches:
+            - node
+          script:
+            - cd src/
+            - mv serverless-deploy/serverless-hom-mx.yml serverless.yml
+            - npm install -g serverless@2.35.0
+            - serverless config credentials --provider aws --key ${MY_AWS_ACCESS_KEY_ID} --secret ${MY_AWS_SECRET_ACCESS_KEY} -o
+            - serverless deploy
+    Deploy Production Brazil:
+      - step:
+          name: Composer install
+          size: 2x
+          services:
+            - docker
+          caches:
+            - docker
+            - composer
+          script:
+            - docker-compose -f docker-compose-production.yml up -d
+            - docker-compose -f docker-compose-production.yml exec -T app composer install --prefer-dist --optimize-autoloader --no-dev || true
+            - docker-compose -f docker-compose-production.yml exec -T app php artisan config:clear || true
+            - docker-compose -f docker-compose-production.yml exec -T app -uroot chmod -R 777 storage || true
+          artifacts:
+            - src/vendor/**
+            - src/bootstrap/cache/*.php
+      - step:
+          name: Deploy
+          deployment: production-br
+          image: node:14.5.0-alpine
+          caches:
+            - node
+          script:
+            - cd src/
+            - mv serverless-deploy/serverless-prod-br.yml serverless.yml
+            - npm install -g serverless@2.35.0
+            - serverless config credentials --provider aws --key ${MY_AWS_ACCESS_KEY_ID} --secret ${MY_AWS_SECRET_ACCESS_KEY} -o
+            - serverless deploy
+    Deploy Homologation Brazil:
+      - step:
+          name: Composer install
+          size: 2x
+          services:
+            - docker
+          caches:
+            - docker
+            - composer
+          script:
+            - docker-compose -f docker-compose-production.yml up -d
+            - docker-compose -f docker-compose-production.yml exec -T app composer install --prefer-dist --optimize-autoloader --no-dev || true
+            - docker-compose -f docker-compose-production.yml exec -T app php artisan config:clear || true
+            - docker-compose -f docker-compose-production.yml exec -T app -uroot chmod -R 777 storage || true
+          artifacts:
+            - src/vendor/**
+            - src/bootstrap/cache/*.php
+      - step:
+          name: Deploy
+          deployment: staging-br
+          image: node:14.5.0-alpine
+          caches:
+            - node
+          script:
+            - cd src/
+            - mv serverless-deploy/serverless-hom-br.yml serverless.yml
+            - npm install -g serverless@2.35.0
+            - serverless config credentials --provider aws --key ${MY_AWS_ACCESS_KEY_ID} --secret ${MY_AWS_SECRET_ACCESS_KEY} -o
+            - serverless deploy
