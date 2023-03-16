@@ -19,9 +19,9 @@ RUN apt-get update -y && \
     apt-get install libmagickwand-dev libmagickcore-dev -y
 
 RUN a2enmod rewrite
-RUN pecl install yaml-2.1.0 zip xdebug && \
-    docker-php-ext-install exif gd pdo pdo_mysql && \
-    docker-php-ext-enable gd yaml zip xdebug && \
+RUN pecl install yaml-2.1.0 zip && \
+    docker-php-ext-install exif gd pdo pdo_mysql mbstring && \
+    docker-php-ext-enable gd yaml zip && \
     pecl install imagick && \
     docker-php-ext-enable imagick
 
