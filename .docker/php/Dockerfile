@@ -15,8 +15,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Installing OS dependencies
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -yq --no-install-recommends wget libyaml-dev libzip-dev libpng-dev unzip libssl-dev pkg-config git nano && \
-    apt-get install libmagickwand-dev libmagickcore-dev -y
+    apt-get install -yq --no-install-recommends wget libyaml-dev libzip-dev libonig-dev libpng-dev unzip libssl-dev pkg-config git nano && \
+    apt-get install libmagickwand-dev  libmagickcore-dev -y
 
 RUN a2enmod rewrite
 RUN pecl install yaml-2.1.0 zip && \
