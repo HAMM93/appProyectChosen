@@ -7,27 +7,12 @@ Start Docker Compose services
 docker-compose up --build -d
 ```
 
-Create the .env file within the .env.example content
+Execute shell script to install PHP dependencies
 ```
-docker-compose exec app cp .env.example .env
-```
-
-Install the PHP dependencies
-```
-docker-compose exec app composer install
+docker-compose exec -u root app /bin/bash /.docker/after-build.sh
 ```
 
-Generate Laravel application Key
-```
-docker-compose exec app php artisan key:generate
-```
-
-Create the database tables structure
-```
-docker-compose exec app php artisan migrate --seed
-```
-
-### After these steps the application with run on http://localhost:9050
+### After these steps the application with run on http://localhost:9050/v1
 
 ## BRAZIL
 

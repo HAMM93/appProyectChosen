@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: ./.docker/php/Dockerfile
-    user: 1000:1000
+    #user: 1000:1000
     volumes:
       - ./src:/var/www/html
       - ./.ci/local/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
